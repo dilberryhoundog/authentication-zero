@@ -55,6 +55,10 @@ class AuthenticationGenerator < Rails::Generators::Base
     copy_file "lib/account_middleware.rb" if options.tenantable?
   end
 
+  def create_seeds
+    copy_file "db/seeds.rb"
+  end
+
   def create_migrations
     migration_template "migrations/create_accounts_migration.rb", "#{db_migrate_path}/create_accounts_migration.rb" if options.tenantable?
     migration_template "migrations/create_users_migration.rb", "#{db_migrate_path}/create_users.rb"
@@ -195,7 +199,7 @@ class AuthenticationGenerator < Rails::Generators::Base
     if options.trackable?
       route "resources :events, only: :index", namespace: :authentications
     end
-    route "resource :password_set,       only: [ :new, :create ]"
+    route "resource :password_set,       only: [ :new, :create ]", namespace: :identity
     route "resource :password_reset,     only: [:new, :edit, :create, :update]", namespace: :identity
     route "resource :email_verification, only: [:show, :create]", namespace: :identity
     route "resource :email,              only: [:edit, :update]", namespace: :identity
@@ -204,8 +208,11 @@ class AuthenticationGenerator < Rails::Generators::Base
     route "resources :sessions, only: [:index, :show, :destroy]"
 
     route 'scope module: "auth" do'
-    # route 'post "sign_up", to: "registrations#create"'
-    # route 'get  "sign_up", to: "registrations#new"' unless options.api?
+
+
+    route # 'post "sign_up", to: "registrations#create"'
+    route # 'get  "sign_up", to: "registrations#new"' unless options.api?
+    route # Uncomment if you want users to be able to sign up
 
     route 'post "sign_in", to: "auth/sessions#create"'
     route 'get  "sign_in", to: "auth/sessions#new"' unless options.api?
@@ -221,7 +228,7 @@ class AuthenticationGenerator < Rails::Generators::Base
   end
 
   def create_tailwind
-    copy_file "assets/stylesheets/application.tailwind.css", "app/assets/stylesheets/application.tailwind.css"
+    copy_file "assets/stylesheets/application.tailwind.css", "app/assets/stylesheets/application.tailwind.css" if tailwind?
   end
 
   private

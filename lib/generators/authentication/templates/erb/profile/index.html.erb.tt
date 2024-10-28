@@ -1,48 +1,57 @@
-<p style="color: green"><%%= notice %></p>
+<div class="max-w-md">
+  <%% if notice.present? %>
+  <p class="notice" id="notice"><%%= notice %></p>
+  <%% end %>
 
-<p>Signed as <%%= Current.user.email %></p>
+  <p class="mb-4">Signed in as <%%= Current.user.email %></p>
 
-<h2>Login and verification</h2>
+  <h2 class="text-2xl font-semibold mb-4">Login and Verification</h2>
 
-<div>
-  <%%= link_to "Change password", edit_password_path %>
-</div>
+  <div class="mb-2">
+    <%%= link_to "Change password", edit_password_path, class: "text-blue-500 hover:underline" %>
+  </div>
 
-<div>
-  <%%= link_to "Change email address", edit_identity_email_path %>
-</div>
-<%- if two_factor? %>
-<div>
-  <%%= link_to "Two-Factor Authentication", new_two_factor_authentication_profile_totp_path %>
-</div>
+  <div class="mb-2">
+    <%%= link_to "Change email address", edit_identity_email_path, class: "text-blue-500 hover:underline" %>
+  </div>
+  <%- if two_factor? %>
+  <div class="mb-2">
+    <%%= link_to "Two-Factor Authentication", new_two_factor_authentication_profile_totp_path, class: "text-blue-500 hover:underline" %>
+  </div>
 
-<%% if Current.user.otp_required_for_sign_in? %>
-  <div><%%= link_to "Recovery Codes", two_factor_authentication_profile_recovery_codes_path %></div>
-  <%- if webauthn? -%>
-  <div><%%= link_to "Security keys", two_factor_authentication_profile_security_keys_path %></div>
+  <%% if Current.user.otp_required_for_sign_in? %>
+    <div class="mb-2"><%%= link_to "Recovery Codes", two_factor_authentication_profile_recovery_codes_path, class: "text-blue-500 hover:underline" %></div>
+    <%- if webauthn? -%>
+    <div class="mb-2"><%%= link_to "Security keys", two_factor_authentication_profile_security_keys_path, class: "text-blue-500 hover:underline" %></div>
+    <%- end -%>
+  <%% end %>
   <%- end -%>
-<%% end %>
-<%- end -%>
-<%- if invitable? %>
-<div>
-  <%%= link_to "Send invitation", new_invitation_path %>
+  <%- if invitable? %>
+    <div>
+      <%%= link_to "Send invitation", new_invitation_path, class: "text-blue-500 hover:underline" %>
+    </div>
+    <%% if Current.user.magic_link_only? %>
+      <div class="mb-2">
+        <%= link_to "Login with a Password", new_identity_password_set_path, class: "text-blue-500 hover:underline" %>
+      </div>
+    <% end %>
+  <%- end -%>
+  <%- if masqueradable? %>
+    <%%= button_to "Signin as last user", user_masquerade_path(User.last), class: "text-blue-500 hover:underline" %>
+  <%- end -%>
+
+  <h2>Access history</h2>
+
+  <div class="mb-2">
+    <%%= link_to "Devices & Sessions", sessions_path, class: "text-blue-500 hover:underline" %>
+  </div>
+  <%- if options.trackable? %>
+    <div class="mb-2">
+      <%%= link_to "Activity Log", authentications_events_path, class: "text-blue-500 hover:underline" %>
+    </div>
+  <%- end -%>
+
+  <br>
+
+  <%%= button_to "Log out", Current.session, method: :delete, class: "bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700" %>
 </div>
-<%- end -%>
-<%- if masqueradable? %>
-<%%= button_to "Signin as last user", user_masquerade_path(User.last) %>
-<%- end -%>
-
-<h2>Access history</h2>
-
-<div>
-  <%%= link_to "Devices & Sessions", sessions_path %>
-</div>
-<%- if options.trackable? %>
-<div>
-  <%%= link_to "Activity Log", authentications_events_path %>
-</div>
-<%- end -%>
-
-<br>
-
-<%%= button_to "Log out", Current.session, method: :delete %>
