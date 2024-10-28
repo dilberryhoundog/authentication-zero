@@ -121,7 +121,7 @@ class AuthenticationGenerator < Rails::Generators::Base
       template "erb/user_mailer/password_reset.html.erb", "app/views/user_mailer/password_reset.html.erb"
     else
       directory "erb/authentications/events", "app/views/auth/authentications/events" if options.trackable?
-      directory "erb/home", "app/views/profile"
+      directory "erb/profile", "app/views/profile"
       directory "erb/identity", "app/views/auth/identity"
       directory "erb/invitations", "app/views/auth/invitations" if invitable?
       directory "erb/passwords", "app/views/auth/passwords"
@@ -154,7 +154,7 @@ class AuthenticationGenerator < Rails::Generators::Base
   end
 
   def add_routes
-    route 'root "home#index"' unless options.api?
+    route 'root "profile#index"' unless options.api?
 
     if sudoable?
       route "resource :sudo, only: [:new, :create]", namespace: :sessions
@@ -199,11 +199,14 @@ class AuthenticationGenerator < Rails::Generators::Base
     route "resource  :password, only: [:edit, :update]"
     route "resources :sessions, only: [:index, :show, :destroy]"
 
-    route 'post "sign_up", to: "registrations#create"'
-    route 'get  "sign_up", to: "registrations#new"' unless options.api?
+    # route 'post "sign_up", to: "registrations#create"'
+    # route 'get  "sign_up", to: "registrations#new"' unless options.api?
 
     route 'post "sign_in", to: "sessions#create"'
     route 'get  "sign_in", to: "sessions#new"' unless options.api?
+
+    # Add this route to allow navigating to magic_link sign-in page.
+    route 'get "magic_link", to: "auth/sessions/passwordlesses#new"'
   end
 
   def create_test_files
