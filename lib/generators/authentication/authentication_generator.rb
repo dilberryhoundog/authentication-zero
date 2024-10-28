@@ -221,7 +221,7 @@ class AuthenticationGenerator < Rails::Generators::Base
   end
 
   def create_tailwind
-    copy_file "assets/stylesheets/application.tailwind.css", "app/assets/stylesheets/application.tailwind.css"
+    copy_file "assets/stylesheets/application.tailwind.css", "app/assets/stylesheets/application.tailwind.css" if tailwind?
   end
 
   private
