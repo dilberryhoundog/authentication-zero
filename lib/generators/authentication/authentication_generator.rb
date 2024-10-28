@@ -81,31 +81,31 @@ class AuthenticationGenerator < Rails::Generators::Base
   end
 
   def create_controllers
-    template "controllers/#{format}/authentications/events_controller.rb", "app/controllers/authentications/events_controller.rb" if options.trackable?
+    template "controllers/#{format}/authentications/events_controller.rb", "app/controllers/auth/authentications/events_controller.rb" if options.trackable?
 
-    directory "controllers/#{format}/identity", "app/controllers/identity"
+    directory "controllers/#{format}/identity", "app/controllers/auth/identity"
 
-    template "controllers/#{format}/sessions/omniauth_controller.rb", "app/controllers/sessions/omniauth_controller.rb" if omniauthable?
-    template "controllers/#{format}/sessions/passwordlesses_controller.rb", "app/controllers/sessions/passwordlesses_controller.rb" if passwordless?
-    template "controllers/#{format}/sessions/sudos_controller.rb", "app/controllers/sessions/sudos_controller.rb" if sudoable?
+    template "controllers/#{format}/sessions/omniauth_controller.rb", "app/controllers/auth/sessions/omniauth_controller.rb" if omniauthable?
+    template "controllers/#{format}/sessions/passwordlesses_controller.rb", "app/controllers/auth/sessions/passwordlesses_controller.rb" if passwordless?
+    template "controllers/#{format}/sessions/sudos_controller.rb", "app/controllers/auth/sessions/sudos_controller.rb" if sudoable?
 
     if two_factor?
-      template "controllers/html/two_factor_authentication/challenge/recovery_codes_controller.rb", "app/controllers/two_factor_authentication/challenge/recovery_codes_controller.rb"
-      template "controllers/html/two_factor_authentication/challenge/security_keys_controller.rb", "app/controllers/two_factor_authentication/challenge/security_keys_controller.rb" if webauthn?
-      template "controllers/html/two_factor_authentication/challenge/totps_controller.rb", "app/controllers/two_factor_authentication/challenge/totps_controller.rb"
+      template "controllers/html/two_factor_authentication/challenge/recovery_codes_controller.rb", "app/controllers/auth/two_factor_authentication/challenge/recovery_codes_controller.rb"
+      template "controllers/html/two_factor_authentication/challenge/security_keys_controller.rb", "app/controllers/auth/two_factor_authentication/challenge/security_keys_controller.rb" if webauthn?
+      template "controllers/html/two_factor_authentication/challenge/totps_controller.rb", "app/controllers/auth/two_factor_authentication/challenge/totps_controller.rb"
 
-      template "controllers/html/two_factor_authentication/profile/recovery_codes_controller.rb", "app/controllers/two_factor_authentication/profile/recovery_codes_controller.rb"
-      template "controllers/html/two_factor_authentication/profile/security_keys_controller.rb", "app/controllers/two_factor_authentication/profile/security_keys_controller.rb" if webauthn?
-      template "controllers/html/two_factor_authentication/profile/totps_controller.rb", "app/controllers/two_factor_authentication/profile/totps_controller.rb"
+      template "controllers/html/two_factor_authentication/profile/recovery_codes_controller.rb", "app/controllers/auth/two_factor_authentication/profile/recovery_codes_controller.rb"
+      template "controllers/html/two_factor_authentication/profile/security_keys_controller.rb", "app/controllers/auth/two_factor_authentication/profile/security_keys_controller.rb" if webauthn?
+      template "controllers/html/two_factor_authentication/profile/totps_controller.rb", "app/controllers/auth/two_factor_authentication/profile/totps_controller.rb"
     end
 
     template "controllers/#{format}/application_controller.rb", "app/controllers/application_controller.rb", force: true
-    template "controllers/#{format}/home_controller.rb", "app/controllers/home_controller.rb" unless options.api?
-    template "controllers/#{format}/invitations_controller.rb", "app/controllers/invitations_controller.rb" if invitable?
-    template "controllers/#{format}/masquerades_controller.rb", "app/controllers/masquerades_controller.rb" if masqueradable?
-    template "controllers/#{format}/passwords_controller.rb", "app/controllers/passwords_controller.rb"
-    template "controllers/#{format}/registrations_controller.rb", "app/controllers/registrations_controller.rb"
-    template "controllers/#{format}/sessions_controller.rb", "app/controllers/sessions_controller.rb"
+    template "controllers/#{format}/profile_controller.rb", "app/controllers/profile_controller.rb" unless options.api?
+    template "controllers/#{format}/invitations_controller.rb", "app/controllers/auth/invitations_controller.rb" if invitable?
+    template "controllers/#{format}/masquerades_controller.rb", "app/controllers/auth/masquerades_controller.rb" if masqueradable?
+    template "controllers/#{format}/passwords_controller.rb", "app/controllers/auth/passwords_controller.rb"
+    template "controllers/#{format}/registrations_controller.rb", "app/controllers/auth/registrations_controller.rb"
+    template "controllers/#{format}/sessions_controller.rb", "app/controllers/auth/sessions_controller.rb"
   end
 
   def install_javascript
@@ -120,17 +120,17 @@ class AuthenticationGenerator < Rails::Generators::Base
       template "erb/user_mailer/email_verification.html.erb", "app/views/user_mailer/email_verification.html.erb"
       template "erb/user_mailer/password_reset.html.erb", "app/views/user_mailer/password_reset.html.erb"
     else
-      directory "erb/authentications/events", "app/views/authentications/events" if options.trackable?
-      directory "erb/home", "app/views/home"
-      directory "erb/identity", "app/views/identity"
-      directory "erb/invitations", "app/views/invitations" if invitable?
-      directory "erb/passwords", "app/views/passwords"
-      directory "erb/registrations", "app/views/registrations"
+      directory "erb/authentications/events", "app/views/auth/authentications/events" if options.trackable?
+      directory "erb/home", "app/views/profile"
+      directory "erb/identity", "app/views/auth/identity"
+      directory "erb/invitations", "app/views/auth/invitations" if invitable?
+      directory "erb/passwords", "app/views/auth/passwords"
+      directory "erb/registrations", "app/views/auth/registrations"
 
-      directory "erb/sessions/passwordlesses", "app/views/sessions/passwordlesses" if passwordless?
-      directory "erb/sessions/sudos", "app/views/sessions/sudos" if sudoable?
-      template  "erb/sessions/index.html.erb", "app/views/sessions/index.html.erb"
-      template  "erb/sessions/new.html.erb", "app/views/sessions/new.html.erb"
+      directory "erb/sessions/passwordlesses", "app/views/auth/sessions/passwordlesses" if passwordless?
+      directory "erb/sessions/sudos", "app/views/auth/sessions/sudos" if sudoable?
+      template  "erb/sessions/index.html.erb", "app/views/auth/sessions/index.html.erb"
+      template  "erb/sessions/new.html.erb", "app/views/auth/sessions/new.html.erb"
 
       if two_factor?
         directory "erb/two_factor_authentication/challenge/recovery_codes", "app/views/two_factor_authentication/challenge/recovery_codes"
