@@ -1,5 +1,9 @@
-class Authentications::EventsController < ApplicationController
-  def index
-    @events = Current.user.events.order(created_at: :desc)
+module Auth
+  module Authentications
+    class Authentications::EventsController < ApplicationController
+      def index
+        @events = Current.user.events.order(created_at: :desc)
+      end
+    end
   end
 end

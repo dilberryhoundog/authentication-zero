@@ -1,4 +1,4 @@
-class MasqueradesController < ApplicationController
+class Auth::MasqueradesController < ApplicationController
   before_action :authorize
   before_action :set_user
 
