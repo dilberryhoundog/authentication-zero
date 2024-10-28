@@ -15,6 +15,7 @@ class AuthenticationGenerator < Rails::Generators::Base
   class_option :invitable,     type: :boolean, desc: "Add sending invitations"
   class_option :masqueradable, type: :boolean, desc: "Add sign-in as button functionallity"
   class_option :tenantable,    type: :boolean, desc: "Add artifacts to implement a row-level tenant app"
+  class_option :tailwind,      type: :boolean, desc: "Add tailwind gem"
 
   source_root File.expand_path("templates", __dir__)
 
@@ -41,6 +42,10 @@ class AuthenticationGenerator < Rails::Generators::Base
 
     if webauthn?
       gem "webauthn", comment: "Use webauthn for making rails become a conformant web authn relying party [https://github.com/cedarcode/webauthn-ruby]"
+    end
+
+    if tailwind?
+      gem "tailwindcss-rails", comment: "Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]"
     end
   end
 
@@ -155,6 +160,8 @@ class AuthenticationGenerator < Rails::Generators::Base
 
   def add_routes
     route 'root "profile#index"' unless options.api?
+    
+    route 'end'
 
     if sudoable?
       route "resource :sudo, only: [:new, :create]", namespace: :sessions
@@ -191,7 +198,7 @@ class AuthenticationGenerator < Rails::Generators::Base
     if options.trackable?
       route "resources :events, only: :index", namespace: :authentications
     end
-
+    route "resource :password_set,       only: [ :new, :create ]"
     route "resource :password_reset,     only: [:new, :edit, :create, :update]", namespace: :identity
     route "resource :email_verification, only: [:show, :create]", namespace: :identity
     route "resource :email,              only: [:edit, :update]", namespace: :identity
@@ -199,6 +206,7 @@ class AuthenticationGenerator < Rails::Generators::Base
     route "resource  :password, only: [:edit, :update]"
     route "resources :sessions, only: [:index, :show, :destroy]"
 
+    route 'scope module: "auth" do'
     # route 'post "sign_up", to: "registrations#create"'
     # route 'get  "sign_up", to: "registrations#new"' unless options.api?
 
@@ -213,6 +221,10 @@ class AuthenticationGenerator < Rails::Generators::Base
     directory "test_unit/controllers/#{format}", "test/controllers"
     directory "test_unit/mailers/", "test/mailers"
     template  "test_unit/test_helper.rb", "test/test_helper.rb", force: true
+  end
+
+  def create_tailwind
+    copy_file "assets/stylesheets/application.tailwind.css", "app/assets/stylesheets/application.tailwind.css"
   end
 
   private
@@ -246,6 +258,10 @@ class AuthenticationGenerator < Rails::Generators::Base
 
     def sudoable?
       options.sudoable? && !options.api?
+    end
+
+    def tailwind?
+      options.tailwind?
     end
 
     def bcrypt_present?

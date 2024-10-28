@@ -1,4 +1,4 @@
-class InvitationsController < ApplicationController
+class Auth::InvitationsController < ApplicationController
   def new
     @user = User.new
   end
