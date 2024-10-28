@@ -43,6 +43,10 @@ class AuthenticationGenerator < Rails::Generators::Base
     if webauthn?
       gem "webauthn", comment: "Use webauthn for making rails become a conformant web authn relying party [https://github.com/cedarcode/webauthn-ruby]"
     end
+
+    if tailwind?
+      gem "tailwindcss-rails", comment: "Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]"
+    end
   end
 
   def create_configuration_files
